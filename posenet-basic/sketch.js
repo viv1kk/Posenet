@@ -8,9 +8,9 @@ let skeletons = [];
 function setup() {
   createCanvas(w, h);
   video = createCapture(VIDEO);
-  
+
   poseNet = ml5.poseNet(video, 'multiple', gotPoses);
-  
+
   video.hide();
   fill(255);
   stroke(255);
@@ -26,7 +26,6 @@ function draw() {
 
 function drawSkeleton() {
  for(let i = 0; i < poses.length; i++) {
-
     for(let j = 0; j < poses[i].skeleton.length; j++) {
       let partA = poses[i].skeleton[j][0];
       let partB = poses[i].skeleton[j][1];

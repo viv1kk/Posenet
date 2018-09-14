@@ -9,6 +9,9 @@ let video;
 let poseNet;
 let poses = [];
 let skeletons = [];
+var recX;
+var recY;
+
 
 // physics for playful interaction
 let VerletPhysics2D = toxi.physics2d.VerletPhysics2D,
@@ -42,9 +45,9 @@ let rightHPos;
 function setup() {
   createCanvas(w, h);
   video = createCapture(VIDEO);
-  
+
   poseNet = ml5.poseNet(video, 'multiple', gotPoses);
-  
+
   video.hide();
   fill(255);
   stroke(255);
@@ -54,23 +57,23 @@ function setup() {
   physics.setWorldBounds(new Rect(0, 0, width, height-height/3));
   physics.addBehavior(new GravityBehavior(new Vec2D(0, 0.15)));
 
-  headPos = new Vec2D(width/2,height/2); 
+  headPos = new Vec2D(width/2,height/2);
   headAttractor = new AttractionBehavior(headPos, 200, -0.9);
   physics.addBehavior(headAttractor);
 
-  leftPos = new Vec2D(width/2,height/2); 
+  leftPos = new Vec2D(width/2,height/2);
   leftSAttractor = new AttractionBehavior(leftPos, 100, -0.9);
   physics.addBehavior(leftSAttractor);
-  
-  rightPos = new Vec2D(width/2,height/2); 
+
+  rightPos = new Vec2D(width/2,height/2);
   rightSAttractor = new AttractionBehavior(rightPos, 100, -0.9);
   physics.addBehavior(rightSAttractor);
 
-  leftHPos = new Vec2D(width/2,height/2); 
+  leftHPos = new Vec2D(width/2,height/2);
   leftHAttractor = new AttractionBehavior(leftHPos, 100, -0.9);
   physics.addBehavior(leftHAttractor);
 
-  rightHPos = new Vec2D(width/2,height/2); 
+  rightHPos = new Vec2D(width/2,height/2);
   rightHAttractor = new AttractionBehavior(rightHPos, 100, -0.9);
   physics.addBehavior(rightHAttractor);
 }
@@ -78,7 +81,7 @@ function setup() {
 function addParticle() {
   let randLoc = Vec2D.randomVector().scale(5).addSelf(width / 2, 0);
   let p = new VerletParticle2D(randLoc);
-    physics.addParticle(p); 
+    physics.addParticle(p);
     physics.addBehavior(new AttractionBehavior(p, 20, -1.2, 0.01));
 }
 
@@ -90,13 +93,15 @@ function draw() {
   drawKeypoints();
   drawSkeleton();
 
+
+
   stroke(0,100);
   line(0,height-height/3,width,height-height/3);
 
   if (physics.particles.length < NUM_PARTICLES) {
     addParticle();
   }
-    
+
   for (let i=0;i<physics.particles.length;i++) {
     let p = physics.particles[i];
     fill(0);
@@ -133,6 +138,59 @@ function drawKeypoints() {
           noFill();
           stroke(100,100,0);
           ellipse(keypoint.position.x, keypoint.position.y,200,200);
+
+
+
+
+          drawArrow();
+          // mouseReleased(keypoint.position.x,keypoint.position.y);
+          //
+
+
+          if(mouseIsPressed)
+          {
+            recX = keypoint.position.x;
+            recY = keypoint.position.y;
+
+            console.log(recX+"     "+recY);
+          }
+
+          function drawArrow()
+          {
+
+            let x = keypoint.position.x;
+            let y = keypoint.position.y;
+            let min = 25;
+            let diffX = x - recX;
+            let diffY = y - recY;
+            if(recX != 0 && recY != 0)
+{
+            if(diffX < -min)
+            {
+              text("RIGHT",30,30)
+              // console.log('RIGHT');
+            }else
+            if(diffX > min)
+            {
+              text("LEFT",30,30)
+              // console.log('LEFT');
+            }else
+            if(diffY < -min)
+            {
+              text("UP",30,30);
+              // console.log('UP');
+            }else
+            if(diffY > min)
+            {
+              text("DOWN",30,30);
+              // console.log('DOWN');
+            }
+
+          }
+}
+}
+
+
         }
         if(j==5) {
           leftPos.set(keypoint.position.x, keypoint.position.y);
@@ -164,7 +222,30 @@ function drawKeypoints() {
       }
     }
   }
-}
+// }
+
+
+
+
+
+
+// var recX;
+// var recY;
+//
+// function mouseReleased(x,y)
+// {
+//   recX = x;
+//   recY = y;
+//
+//   console.log(recX+"     "+recY);
+// }
+
+
+
+
+
+
+
 
 function gotPoses(results) {
   poses = results;
