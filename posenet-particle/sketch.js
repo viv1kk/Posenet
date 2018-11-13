@@ -86,14 +86,15 @@ function addParticle() {
 }
 
 function draw() {
+
   physics.update();
+
   background(255);
   tint(255,40);
   image(video, 0, 0, w, h);
+
   drawKeypoints();
   drawSkeleton();
-
-
 
   stroke(0,100);
   line(0,height-height/3,width,height-height/3);
@@ -110,7 +111,6 @@ function draw() {
   }
 
   noStroke();
-  //text(int(frameRate()), 30, 30);
 }
 
 function drawSkeleton() {
