@@ -128,7 +128,7 @@ function drawKeypoints() {
   for(let i = 0; i < poses.length; i++) {
     for(let j = 0; j < poses[i].pose.keypoints.length; j++) {
       let keypoint = poses[i].pose.keypoints[j];
-      if (keypoint.score > 0.5) {
+      if (keypoint.score > 0.2) {
         fill(255,0,100);
         noStroke();
         ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
@@ -139,13 +139,8 @@ function drawKeypoints() {
           stroke(100,100,0);
           ellipse(keypoint.position.x, keypoint.position.y,200,200);
 
-
-
-
-          drawArrow();
-          // mouseReleased(keypoint.position.x,keypoint.position.y);
-          //
-
+         // Calling function drawArrow to enable the functionality to detect the direction of the movement of head
+           drawArrow();
 
           if(mouseIsPressed)
           {
@@ -164,7 +159,7 @@ function drawKeypoints() {
             let diffX = x - recX;
             let diffY = y - recY;
             if(recX != 0 && recY != 0)
-{
+            {
             if(diffX < -min)
             {
               text("RIGHT",30,30)
@@ -185,13 +180,10 @@ function drawKeypoints() {
               text("DOWN",30,30);
               // console.log('DOWN');
             }
-
           }
-}
-}
-
-
         }
+      }
+  }
         if(j==5) {
           leftPos.set(keypoint.position.x, keypoint.position.y);
           noFill();
@@ -218,34 +210,9 @@ function drawKeypoints() {
           stroke(100,100,0);
           ellipse(keypoint.position.x, keypoint.position.y,100,100);
         }
-
-      }
     }
   }
-// }
-
-
-
-
-
-
-// var recX;
-// var recY;
-//
-// function mouseReleased(x,y)
-// {
-//   recX = x;
-//   recY = y;
-//
-//   console.log(recX+"     "+recY);
-// }
-
-
-
-
-
-
-
+}
 
 function gotPoses(results) {
   poses = results;
