@@ -9,11 +9,15 @@ let video;
 let poseNet;
 let poses = [];
 let skeletons = [];
-var recX;
-var recY;
+let recX;
+let recY;
 
+// variable for Stats
 
-// physics for playful interaction
+let stats = new Stats();
+
+// Implementation of ToxicLibs' VerletPhysics2D Physics Engine for Partical Simulation
+
 let VerletPhysics2D = toxi.physics2d.VerletPhysics2D,
     VerletParticle2D = toxi.physics2d.VerletParticle2D,
     AttractionBehavior = toxi.physics2d.behaviors.AttractionBehavior,
@@ -45,6 +49,16 @@ let rightHPos;
 function setup() {
   createCanvas(w, h);
   video = createCapture(VIDEO);
+
+  // Implementation of real time performance monitor having :
+    // FPS Frames rendered in the last second. The higher the number the better.
+    // MS Milliseconds needed to render a frame. The lower the number the better.
+    // MB MBytes of allocated memory. (Run Chrome with --enable-precise-memory-info)
+    // CUSTOM User-defined panel support.
+
+  stats.dom.style.position = 'relative';
+	stats.dom.style.float = 'right';
+	document.body.appendChild( stats.dom );
 
   poseNet = ml5.poseNet(video, 'multiple', gotPoses);
 
@@ -87,30 +101,35 @@ function addParticle() {
 
 function draw() {
 
-  physics.update();
+  function animate()
+  {
+    physics.update();
 
-  background(255);
-  tint(255,40);
-  image(video, 0, 0, w, h);
+    background(255);
+    tint(255,40);
+    image(video, 0, 0, w, h);
 
-  drawKeypoints();
-  drawSkeleton();
+    drawKeypoints();
+    drawSkeleton();
 
-  stroke(0,100);
-  line(0,height-height/3,width,height-height/3);
+    stroke(0,100);
+    line(0,height-height/3,width,height-height/3);
 
-  if (physics.particles.length < NUM_PARTICLES) {
-    addParticle();
-  }
+    if (physics.particles.length < NUM_PARTICLES) {
+      addParticle();
+    }
 
-  for (let i=0;i<physics.particles.length;i++) {
-    let p = physics.particles[i];
-    fill(0);
+    for (let i=0;i<physics.particles.length;i++) {
+      let p = physics.particles[i];
+      fill(0);
+      noStroke();
+      ellipse(p.x, p.y, 10, 10);
+    }
     noStroke();
-    ellipse(p.x, p.y, 10, 10);
+    stats.update();
   }
-
-  noStroke();
+  requestAnimationFrame( animate );
+  animate();
 }
 
 function drawSkeleton() {
