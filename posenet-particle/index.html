@@ -1,22 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pose Scene</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="../libs/p5.js"></script>
-    <script src="../libs/p5.dom.js"></script>
-    <script src="../libs/ml5.min.js"></script> <!--version 0.1.1-->
-    <script src="../libs/toxiclibs.min.js"></script>
-    <script src="../libs/stats.min.js"></script>
-    <style>
-        body {
-            padding: 0;
-            margin: 0;
-        }
-    </style>
-</head>
+<!--
+ Copyright (c) 2018 ml5
 
+ This software is released under the MIT License.
+ https://opensource.org/licenses/MIT
+-->
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>PoseNet Particles</title>
+
+  <script src="../libs/p5.js"></script><!-- Version 0.7.2-->
+  <script src="../libs/p5.dom.js"></script><!-- Version 0.7.2-->
+  <!-- <script src="https://unpkg.com/ml5@0.1.2/dist/ml5.min.js"></script> -->
+  <script src="../libs/ml5.min.js"></script> <!-- Version 0.1.3-->
+
+  <script src="../libs/toxiclibs.min.js"></script>
+  <script src="../libs/stats.min.js"></script>
+  <script src="../libs/dat.gui.min.js"></script>
+  <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min.js'></script> -->
+
+</head>
+<style>
+  #gui { position: absolute; top: 200px; left: 8px }
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: black;
+}
+.footer-text {
+    max-width: 600px;
+    text-align: center;
+    margin: auto;
+}
+@media only screen and (max-width: 600px) {
+  .footer-text, .dg {
+    display: none;
+  }
+}
+</style>
 <body>
-    <script src="sketch.js"></script>
+  <div class="footer">
+        <div class="footer-text">
+            <p>
+                PoseNet runs with either a <strong>single-pose</strong> or <strong>multi-pose</strong> detection algorithm. The single person pose detector is faster and more accurate but requires only one subject present in the image.
+                <br>
+                <br> The <strong>output stride</strong> and <strong>image scale factor</strong> have the largest effects on accuracy/speed. A <i>higher</i> output stride results in lower accuracy but higher speed. A <i>higher</i> image scale factor results in higher accuracy but lower speed.
+            </p>
+        </div>
+    </div>
+  <h1>PoseNet</h1>
+  <p id='status'>Loading model...</p>
+  <script src="ControlPanel.js"></script>
+  <script src="posenet.js"></script>
+  <script src="performanceMonitor.js"></script>
+  <script src="Physics.js"></script>
+  <script src="sketch.js"></script>
+  <script src="HeadPosition.js"></script>
+  <script src="Confidence.js"></script>
+
 </body>
+
 </html>
