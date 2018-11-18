@@ -15,10 +15,11 @@ let leftKnee;
 let rightKnee;
 let leftAnkle;
 let rightAnkle;
-
+let poseScore;
 
 let dataSet = function()
 {
+  poseScore = this.poseScore = 0;
   nose = this.nose = 0;
   leftEye = this.leftEye = 0;
   rightEye = this.rightEye = 0;
@@ -43,58 +44,68 @@ function loadConfidenceData()
   data = new dataSet();
 
   let gui = new dat.GUI();
-
+  gui.autoPlace = false;
   gui.domElement.id = 'gui';
-  gui.width = 300;
+  gui.width = 320;
 
-  gui.add(data, 'nose', 0,1,0.000001).listen();
-  gui.add(data, 'leftEye', 0,1,0.000001).listen();
-  gui.add(data, 'rightEye', 0,1,0.000001).listen();
-  gui.add(data, 'leftEar', 0,1,0.000001).listen();
-  gui.add(data, 'rightEar', 0,1,0.000001).listen();
-  gui.add(data, 'leftShoulder', 0,1,0.000001).listen();
-  gui.add(data, 'rightShoulder', 0,1,0.000001).listen();
-  gui.add(data, 'leftElbow', 0,1,0.000001).listen();
-  gui.add(data, 'rightElbow', 0,1,0.000001).listen();
-  gui.add(data, 'leftWrist', 0,1,0.000001).listen();
-  gui.add(data, 'rightWrist', 0,1,0.000001).listen();
-  gui.add(data, 'leftHip', 0,1,0.000001).listen();
-  gui.add(data, 'rightHip', 0,1,0.000001).listen();
-  gui.add(data, 'leftKnee', 0,1,0.000001).listen();
-  gui.add(data, 'rightKnee', 0,1,0.000001).listen();
-  gui.add(data, 'leftAnkle', 0,1,0.000001).listen();
-  gui.add(data, 'rightAnkle', 0,1,0.000001).listen();
+  var s1 = gui.addFolder("Subject #1");
+    s1.add(data, 'poseScore', 0,1,0.000001).listen();
+  let kp1 = gui.addFolder("Keypoints Confidence Score");
+    kp1.add(data, 'nose', 0,1,0.000001).listen();
+    kp1.add(data, 'leftEye', 0,1,0.000001).listen();
+    kp1.add(data, 'rightEye', 0,1,0.000001).listen();
+    kp1.add(data, 'leftEar', 0,1,0.000001).listen();
+    kp1.add(data, 'rightEar', 0,1,0.000001).listen();
+    kp1.add(data, 'leftShoulder', 0,1,0.000001).listen();
+    kp1.add(data, 'rightShoulder', 0,1,0.000001).listen();
+    kp1.add(data, 'leftElbow', 0,1,0.000001).listen();
+    kp1.add(data, 'rightElbow', 0,1,0.000001).listen();
+    kp1.add(data, 'leftWrist', 0,1,0.000001).listen();
+    kp1.add(data, 'rightWrist', 0,1,0.000001).listen();
+    kp1.add(data, 'leftHip', 0,1,0.000001).listen();
+    kp1.add(data, 'rightHip', 0,1,0.000001).listen();
+    kp1.add(data, 'leftKnee', 0,1,0.000001).listen();
+    kp1.add(data, 'rightKnee', 0,1,0.000001).listen();
+    kp1.add(data, 'leftAnkle', 0,1,0.000001).listen();
+    kp1.add(data, 'rightAnkle', 0,1,0.000001).listen();
+    kp1.open();
+  s1.open();
+
 }
 
-  let pose;
-  // millisecond = millis();
+ let pose;
 
   function grabVal(k)
   {
     pose = k;
 
-    nose = pose.keypoints[0].score;
-    leftEye = pose.keypoints[1].score;
-    rightEye = pose.keypoints[2].score;
-    leftEar = pose.keypoints[3].score;
-    rightEar = pose.keypoints[4].score;
-    leftShoulder = pose.keypoints[4].score;
-    rightShoulder = pose.keypoints[6].score;
-    leftElbow = pose.keypoints[7].score;
-    rightElbow = pose.keypoints[8].score;
-    leftWrist = pose.keypoints[9].score;
-    rightWrist = pose.keypoints[10].score;
-    leftHip = pose.keypoints[11].score;
-    rightHip = pose.keypoints[12].score;
-    leftKnee = pose.keypoints[13].score;
-    rightKnee = pose.keypoints[14].score;
-    leftAnkle = pose.keypoints[15].score;
-    rightAnkle = pose.keypoints[16].score;
-  }
+    for(let i = 0; i <1; i++)
+    {
+    poseScore = pose[i].pose.score;
 
+    nose = pose[i].pose.keypoints[0].score;
+    leftEye = pose[i].pose.keypoints[1].score;
+    rightEye = pose[i].pose.keypoints[2].score;
+    leftEar = pose[i].pose.keypoints[3].score;
+    rightEar = pose[i].pose.keypoints[4].score;
+    leftShoulder = pose[i].pose.keypoints[4].score;
+    rightShoulder = pose[i].pose.keypoints[6].score;
+    leftElbow = pose[i].pose.keypoints[7].score;
+    rightElbow = pose[i].pose.keypoints[8].score;
+    leftWrist = pose[i].pose.keypoints[9].score;
+    rightWrist = pose[i].pose.keypoints[10].score;
+    leftHip = pose[i].pose.keypoints[11].score;
+    rightHip = pose[i].pose.keypoints[12].score;
+    leftKnee = pose[i].pose.keypoints[13].score;
+    rightKnee = pose[i].pose.keypoints[14].score;
+    leftAnkle = pose[i].pose.keypoints[15].score;
+    rightAnkle = pose[i].pose.keypoints[16].score;
+  }
+}
 
 let update = function() {
 
+  data.poseScore = poseScore;
   data.nose = nose;
   data.leftEye = leftEye;
   data.rightEye = rightEye;
@@ -113,5 +124,5 @@ let update = function() {
   data.leftAnkle = leftAnkle;
   data.rightAnkle = rightAnkle;
 
-  requestAnimationFrame(update);
+    requestAnimationFrame(update);
 };

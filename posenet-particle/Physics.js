@@ -1,11 +1,11 @@
 // Implementation of ToxicLibs' VerletPhysics2D Physics Engine for Partical Simulation
 
 let VerletPhysics2D = toxi.physics2d.VerletPhysics2D,
-  VerletParticle2D = toxi.physics2d.VerletParticle2D,
-  AttractionBehavior = toxi.physics2d.behaviors.AttractionBehavior,
-  GravityBehavior = toxi.physics2d.behaviors.GravityBehavior,
-  Vec2D = toxi.geom.Vec2D,
-  Rect = toxi.geom.Rect;
+VerletParticle2D = toxi.physics2d.VerletParticle2D,
+AttractionBehavior = toxi.physics2d.behaviors.AttractionBehavior,
+GravityBehavior = toxi.physics2d.behaviors.GravityBehavior,
+Vec2D = toxi.geom.Vec2D,
+Rect = toxi.geom.Rect;
 
 let NUM_PARTICLES;
 
@@ -29,8 +29,8 @@ let rightHAttractor;
 let rightHPos;
 
 
-  function loadPhysics()
-  {
+function loadPhysics()
+{
 
   fill(255);
   stroke(255);
@@ -38,7 +38,7 @@ let rightHPos;
   physics = new VerletPhysics2D();
   physics.setDrag(0.05);
   physics.setWorldBounds(new Rect(0, 0, width, height-height/3));
-  physics.addBehavior(new GravityBehavior(new Vec2D(0, 0.15)));
+  physics.addBehavior(new GravityBehavior(new Vec2D(0, 0.15)));  // value range should be b/w 0-1.00
 
   headPos = new Vec2D(width/2, height/2);
   headAttractor = new AttractionBehavior(headPos, 200, -0.9);
@@ -76,34 +76,36 @@ function addParticle() {
 //     physics.removeParticle();
 // }
 
-
 function applyPhysics()
 {
   physics.update();
   NUM_PARTICLES = particle;
   stroke(0, 100);
   line(0, height-height/3, width, height-height/3);
-    if (physics.particles.length <  NUM_PARTICLES) {
-      addParticle();
-      // console.log(physics.particles.length);
-    }
-    if(physics.particles.length > NUM_PARTICLES)
-    {
-      physics.particles.pop();
-      // removeParticles();
-    }
+  if (physics.particles.length <  NUM_PARTICLES) {
+    addParticle();
+    // console.log(physics.particles.length);
+  }
+  if(physics.particles.length > NUM_PARTICLES)
+  {
+    physics.particles.pop();
+    // removeParticles();
+  }
 
-    for (let i=0; i<physics.particles.length; i++) {
-      let p = physics.particles[i];
-      fill(0);
-      noStroke();
-      ellipse(p.x, p.y, 10, 10);
-    }
+  for (let i=0; i<physics.particles.length; i++) {
+    let p = physics.particles[i];
+
+    fill(0);
     noStroke();
+    ellipse(p.x, p.y, 10, 10);
+  }
+  noStroke();
 }
 
 function circularBoundary(j,keypoint)
 {
+  o = j;
+  k = keypoint;
   if (j==0) {
     headPos.set(keypoint.position.x, keypoint.position.y);
     noFill();

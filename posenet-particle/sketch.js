@@ -1,5 +1,3 @@
-let millisecond;
-
 function setup()
 {
   loadControls();
@@ -12,8 +10,8 @@ function setup()
 
 function draw()
 {
-    runPoseNet();
-    applyPhysics();
-    update();
-    stats.update();
+  runPoseNet();
+  applyPhysics();
+  update();
+  stats.update();
 }

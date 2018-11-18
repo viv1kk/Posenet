@@ -3,7 +3,7 @@ let h = 480;
 let video;
 let poseNet;
 let poses = [];
-let cavas;
+let canvas;
 
 function loadPoseNet(){
   canvas = createCanvas(w, h, P2D);
@@ -13,30 +13,26 @@ function loadPoseNet(){
 
   // Create a new poseNet method with a single detection
 
-    poseNet = ml5.poseNet(video,modelState,{
-     imageScaleFactor: 0.3,
-     multipler: 0.75,
-     outputStride: 16,
-     flipHorizontal: true,
-     minConfidence: 0.5,
-     maxPoseDetections: 5,
-     scoreThreshold: 0.5,
-     nmsRadius: 20,
-     detectionType: 'multiple'
+  poseNet = ml5.poseNet(video,modelState,{
+    detectionType: 'single',
+    imageScaleFactor: 0.3,
+    multiplier: 0.75,
+    outputStride: 16,
+    flipHorizontal: true,
+    minConfidence: 0.5, // part Confidence
+    maxPoseDetections: 5,
+    scoreThreshold: 0.5, // pose Confidence
+    nmsRadius: 20
   });
-
-    function modelState()
-    {
-      select('#status').html('Model Loaded');
-    }
-    // This sets up an event that fills the global variable "poses"
-    // with an array every time new poses are detected
-    poseNet.on('pose', function(results) {
-      poses = results;
-      // console.log(pose);
-    });
-
-
+  function modelState()
+  {
+    select('#status').html('<b>Model Loaded</b>');
+  }
+  // This sets up an event that fills the global variable "poses"
+  // with an array every time new poses are detected
+  poseNet.on('pose', function(results) {
+    poses = results;
+  });
   // Hide the video element, and just show the canvas
   video.hide();
 }
@@ -46,17 +42,18 @@ function loadPoseNet(){
 function runPoseNet() {
 
   poseNet.detectionType = algo;
-  poseNet.multipler = multiplers;
-  poseNet.minConfidence = minPoseConf;
-  poseNet.outputStride = outStride;  //error exist
+  poseNet.minConfidence = minPartConf;
+  poseNet.scoreThreshold = minPoseConf;
+  poseNet.outputStride = parseInt(outStride,10);
   poseNet.imageScaleFactor = iSFactor;
   poseNet.flipHorizontal = flip;
-  poseNet.maxPoseDetections = maxPose;
+  poseNet.maxPoseDetections = parseInt(maxPose);
   poseNet.nmsRadius = nmsRad;
 
+  poseNet.multiplier = Number(mobileNet);
 
   var x = (windowWidth - w) / 2;
-  var y = (windowHeight - h) / 2;
+  var y = (windowHeight - h-150) / 2;
   canvas.position(x, y);
 
 
@@ -74,14 +71,15 @@ function runPoseNet() {
       pop();
     }
     else{
-    image(video, 0, 0, width, height);
+      image(video, 0, 0, width, height);
+    }
   }
-}
 
-  background(255,255,255,50); //In Place of tint function
+  background(255,255,255,150); //In Place of tint function
 
-    drawKeypoints();
-  if(showSkl)
+  drawKeypoints();
+
+  if(showSkl && poseNet.scoreThreshold < poseScore)
   {
     drawSkeleton();
   }
@@ -90,29 +88,29 @@ function runPoseNet() {
 function drawKeypoints() {
   for (let i = 0; i < poses.length; i++) {
     let pose = poses[i].pose;
-  millisecond = millis();
+
     for (let j = 0; j < pose.keypoints.length; j++) {
       let keypoint = pose.keypoints[j];
-      grabVal(pose);
+      grabVal(poses);
       if (keypoint.score > poseNet.minConfidence) {
-        fill(255, 0, 100);
-        noStroke();
-        if(millisecond >10000 && millisecond <=11000)
+        if(poseNet.scoreThreshold < poseScore)
         {
-        console.log(poses[j]);
-      }
+          fill(255, 0, 100);
+          noStroke();
 
-        if(showKey)
-        {
-          ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
-          text(j, keypoint.position.x+10, keypoint.position.y);
+          if(showKey)
+          {
+            ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
+            text(j, keypoint.position.x+10, keypoint.position.y);
+          }
+
+          if(showBoundaries)
+          {
+            circularBoundary(j,keypoint);
+          }
+          // Calling function drawArrow to enable the functionality to detect the direction of the movement of head
+          drawArrow(j,keypoint);
         }
-        if(showBoundaries)
-        {
-          circularBoundary(j,keypoint);
-        }
-        // Calling function drawArrow to enable the functionality to detect the direction of the movement of head
-        drawArrow(j,keypoint);
       }
     }
   }
@@ -125,6 +123,7 @@ function drawSkeleton() {
     for (let j = 0; j < skeleton.length; j++) {
       let partA = skeleton[j][0];
       let partB = skeleton[j][1];
+
       stroke(0,150);
       strokeWeight(2);
       line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);

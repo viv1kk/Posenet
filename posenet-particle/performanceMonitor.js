@@ -8,7 +8,10 @@ function setMonitor()
   // MB MBytes of allocated memory. (Run Chrome with --enable-precise-memory-info)
   // CUSTOM User-defined panel support.
 
-  stats.dom.style.position = 'relative';
+  stats.dom.style.position = 'absolute';
   stats.dom.style.float = 'left';
+  stats.dom.style.top = 8;
+  stats.dom.style.left=8;
+  stats.domElement.id = 'stats';
   document.body.appendChild( stats.dom );
 }
