@@ -14,16 +14,17 @@ function loadPoseNet(){
   // Create a new poseNet method with a single detection
 
   poseNet = ml5.poseNet(video,modelState,{
-    detectionType: 'single',
-    imageScaleFactor: 0.3,
-    multiplier: 0.75,
-    outputStride: 16,
-    flipHorizontal: true,
-    minConfidence: 0.5, // part Confidence
-    maxPoseDetections: 5,
-    scoreThreshold: 0.5, // pose Confidence
-    nmsRadius: 20
+    // detectionType: 'single',
+    // imageScaleFactor: 0.3,
+    // multiplier: 0.75,
+    // outputStride: 16,
+    // flipHorizontal: false,
+    // minConfidence: 0.5, // part Confidence
+    // maxPoseDetections: 5,
+    // scoreThreshold: 0.5, // pose Confidence
+    // nmsRadius: 20
   });
+
   function modelState()
   {
     select('#status').html('<b>Model Loaded</b>');
@@ -88,20 +89,46 @@ function runPoseNet() {
 function drawKeypoints() {
   for (let i = 0; i < poses.length; i++) {
     let pose = poses[i].pose;
+    if(keyIsPressed)
+    {
+      console.log(pose);
+    }
 
     for (let j = 0; j < pose.keypoints.length; j++) {
       let keypoint = pose.keypoints[j];
-      grabVal(poses);
+      grabVal(poses,j);
       if (keypoint.score > poseNet.minConfidence) {
         if(poseNet.scoreThreshold < poseScore)
         {
           fill(255, 0, 100);
           noStroke();
-
+          let h = j;
           if(showKey)
           {
             ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
-            text(j, keypoint.position.x+10, keypoint.position.y);
+
+            // Possibly a Bug in ml5.min.js version 0.1.3
+            // poseNet.flipHorizontal not working so I'm hard-coding the logic
+            //Begin
+            if(poseNet.flipHorizontal)
+            {
+              let c = 0;
+              if(j % 2 == 0){
+                if(j == 0)
+                {
+                  c = j;
+                }
+                else
+                c = j-1;
+              }
+              else {
+                c = j+1;
+              }
+              h = c;
+            }
+            //End
+
+            text(h, keypoint.position.x+10, keypoint.position.y);
           }
 
           if(showBoundaries)

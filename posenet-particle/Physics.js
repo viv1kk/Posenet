@@ -38,14 +38,16 @@ function loadPhysics()
   physics = new VerletPhysics2D();
   physics.setDrag(0.05);
   physics.setWorldBounds(new Rect(0, 0, width, height-height/3));
-  physics.addBehavior(new GravityBehavior(new Vec2D(0, 0.15)));  // value range should be b/w 0-1.00
+  physics.addBehavior(new GravityBehavior(new Vec2D(0,0.15)));
+  // Vec2D(x,y) x = gravity pull in Horizontal Position and y = gravity pull in Vertical Position (Both values can be +ve and -ve)
+  // value range should be b/w 0-1.00
 
   headPos = new Vec2D(width/2, height/2);
-  headAttractor = new AttractionBehavior(headPos, 200, -0.9);
+  headAttractor = new AttractionBehavior(headPos, 200, -2);
   physics.addBehavior(headAttractor);
 
   leftPos = new Vec2D(width/2, height/2);
-  leftSAttractor = new AttractionBehavior(leftPos, 100, -0.9);
+  leftSAttractor = new AttractionBehavior(leftPos, 100, -0.9); // AttractionBehavior(particle, distance, strength);
   physics.addBehavior(leftSAttractor);
 
   rightPos = new Vec2D(width/2, height/2);
@@ -68,7 +70,7 @@ function addParticle() {
   randLoc = Vec2D.randomVector().scale(5).addSelf(width / 2, 0);
   p = new VerletParticle2D(randLoc);
   physics.addParticle(p);
-  physics.addBehavior(new AttractionBehavior(p, 20, -1.2, 0.1));
+  physics.addBehavior(new AttractionBehavior(p, 20, -1.2, 0.1));  // AttractionBehavior(particle, distance, strength, jitter);
 }
 
 // function removeParticles()
@@ -88,7 +90,10 @@ function applyPhysics()
   }
   if(physics.particles.length > NUM_PARTICLES)
   {
+    // console.log(physics.behaviours);
     physics.particles.pop();
+    // physics.behaviour.AttractionBehavior.pop();
+
     // removeParticles();
   }
 
