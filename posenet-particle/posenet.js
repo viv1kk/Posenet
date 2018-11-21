@@ -6,24 +6,12 @@ let poses = [];
 let canvas;
 
 function loadPoseNet(){
-  canvas = createCanvas(w, h, P2D);
+  canvas = createCanvas( w, h, P2D);
 
   video = createCapture(VIDEO);
   video.size(width, height);
 
-  // Create a new poseNet method with a single detection
-
-  poseNet = ml5.poseNet(video,modelState,{
-    // detectionType: 'single',
-    // imageScaleFactor: 0.3,
-    // multiplier: 0.75,
-    // outputStride: 16,
-    // flipHorizontal: false,
-    // minConfidence: 0.5, // part Confidence
-    // maxPoseDetections: 5,
-    // scoreThreshold: 0.5, // pose Confidence
-    // nmsRadius: 20
-  });
+  poseNet = ml5.poseNet(modelState);
 
   function modelState()
   {
@@ -38,28 +26,37 @@ function loadPoseNet(){
   video.hide();
 }
 
-// PoseNet control Configuration
-
 function runPoseNet() {
 
-  poseNet.detectionType = algo;
+  if(poseNet.detectionType != algo)
+  {
+    if(algo === 'multi-pose')
+    {
+      poseNet.multiPose(video);
+    }
+    else
+    {
+      poseNet.singlePose(video);
+    }
+  }
   poseNet.minConfidence = minPartConf;
   poseNet.scoreThreshold = minPoseConf;
   poseNet.outputStride = parseInt(outStride,10);
   poseNet.imageScaleFactor = iSFactor;
-  poseNet.flipHorizontal = flip;
-  poseNet.maxPoseDetections = parseInt(maxPose);
+  poseNet.flipHorizontal = Boolean(flip);
   poseNet.nmsRadius = nmsRad;
 
-  poseNet.multiplier = Number(mobileNet);
+  if(poseNet.multiplier != Number(mobileNet))
+  {
+    poseNet.multiplier = Number(mobileNet);
+    poseNet.load(mobileNet);
+  }
 
   var x = (windowWidth - w) / 2;
   var y = (windowHeight - h-150) / 2;
   canvas.position(x, y);
 
-
   background(255);
-  // tint(255,40);
 
   if(showVid)
   {
@@ -87,12 +84,16 @@ function runPoseNet() {
 }
 
 function drawKeypoints() {
-  for (let i = 0; i < poses.length; i++) {
+  var ind;
+  if(algo === 'multi-pose' && (maxPose -1)<poses.length)
+  {
+    ind = maxPose;
+  }
+  else {
+    ind = poses.length;
+  }
+  for (let i = 0; i < ind; i++) {
     let pose = poses[i].pose;
-    if(keyIsPressed)
-    {
-      console.log(pose);
-    }
 
     for (let j = 0; j < pose.keypoints.length; j++) {
       let keypoint = pose.keypoints[j];
@@ -106,7 +107,6 @@ function drawKeypoints() {
           if(showKey)
           {
             ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
-
             // Possibly a Bug in ml5.min.js version 0.1.3
             // poseNet.flipHorizontal not working so I'm hard-coding the logic
             //Begin
@@ -127,13 +127,11 @@ function drawKeypoints() {
               h = c;
             }
             //End
-
             text(h, keypoint.position.x+10, keypoint.position.y);
           }
-
           if(showBoundaries)
           {
-            circularBoundary(j,keypoint);
+            circularBoundary(j,keypoint,i);
           }
           // Calling function drawArrow to enable the functionality to detect the direction of the movement of head
           drawArrow(j,keypoint);
@@ -144,7 +142,15 @@ function drawKeypoints() {
 }
 
 function drawSkeleton() {
-  for (let i = 0; i < poses.length; i++) {
+  var ind;
+  if(algo === 'multi-pose' && (maxPose -1)< poses.length)
+  {
+    ind = maxPose -1;
+  }
+  else {
+    ind = poses.length;
+  }
+  for (let i = 0; i < ind; i++) {
     let skeleton = poses[i].skeleton;
 
     for (let j = 0; j < skeleton.length; j++) {
@@ -152,7 +158,6 @@ function drawSkeleton() {
       let partB = skeleton[j][1];
 
       stroke(0,150);
-      strokeWeight(2);
       line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
     }
   }

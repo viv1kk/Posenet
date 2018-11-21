@@ -40,8 +40,6 @@ function loadPhysics()
   physics.setWorldBounds(new Rect(0, 0, width, height-height/3));
   physics.addBehavior(new GravityBehavior(new Vec2D(0,0.15)));
   // Vec2D(x,y) x = gravity pull in Horizontal Position and y = gravity pull in Vertical Position (Both values can be +ve and -ve)
-  // value range should be b/w 0-1.00
-
   headPos = new Vec2D(width/2, height/2);
   headAttractor = new AttractionBehavior(headPos, 200, -2);
   physics.addBehavior(headAttractor);
@@ -73,11 +71,6 @@ function addParticle() {
   physics.addBehavior(new AttractionBehavior(p, 20, -1.2, 0.1));  // AttractionBehavior(particle, distance, strength, jitter);
 }
 
-// function removeParticles()
-// {
-//     physics.removeParticle();
-// }
-
 function applyPhysics()
 {
   physics.update();
@@ -86,15 +79,10 @@ function applyPhysics()
   line(0, height-height/3, width, height-height/3);
   if (physics.particles.length <  NUM_PARTICLES) {
     addParticle();
-    // console.log(physics.particles.length);
   }
   if(physics.particles.length > NUM_PARTICLES)
   {
-    // console.log(physics.behaviours);
     physics.particles.pop();
-    // physics.behaviour.AttractionBehavior.pop();
-
-    // removeParticles();
   }
 
   for (let i=0; i<physics.particles.length; i++) {
@@ -107,14 +95,13 @@ function applyPhysics()
   noStroke();
 }
 
-function circularBoundary(j,keypoint)
+function circularBoundary(j,keypoint,i)
 {
-  o = j;
-  k = keypoint;
   if (j==0) {
     headPos.set(keypoint.position.x, keypoint.position.y);
     noFill();
     stroke(100,100,0);
+    text("Subject : "+(i+1), keypoint.position.x-25, keypoint.position.y-105);
     ellipse(keypoint.position.x, keypoint.position.y, 200, 200);
   }
 

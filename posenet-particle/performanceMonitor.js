@@ -13,5 +13,5 @@ function setMonitor()
   stats.dom.style.top = 8;
   stats.dom.style.left=8;
   stats.domElement.id = 'stats';
-  document.body.appendChild( stats.dom );
+  document.body.appendChild(stats.dom);
 }

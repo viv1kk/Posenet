@@ -1,3 +1,5 @@
+let subject;
+
 let nose;
 let leftEye;
 let rightEye;
@@ -21,6 +23,8 @@ let pose;
 
 let dataSet = function()
 {
+  subject = this.subject = 1;
+
   poseScore = this.poseScore = 0;
   nose = this.nose = 0;
   leftEye = this.leftEye = 0;
@@ -40,6 +44,7 @@ let dataSet = function()
   leftAnkle = this.leftAnkle = 0;
   rightAnkle = this.rightAnkle = 0;
 }
+
 let data;
 function loadConfidenceData()
 {
@@ -50,7 +55,9 @@ function loadConfidenceData()
   gui.domElement.id = 'gui';
   gui.width = 320;
 
-  var s1 = gui.addFolder("Subject #1");
+  gui.add(data, 'subject', [1,2,3,4,5]).onChange(callBack).listen();
+
+  var s1 = gui.addFolder("Subject #");
   s1.add(data, 'poseScore', 0,1,0.000001).listen();
   let kp1 = gui.addFolder("Keypoints Confidence Score");
   kp1.add(data, 'nose', 0,1,0.000001).listen();
@@ -74,76 +81,94 @@ function loadConfidenceData()
   s1.open();
 }
 
+let sub = 0;
+function callBack()
+{
+  sub = data.subject -1;
+}
+
 function grabVal(k,j)
 {
+  let i  = 0;
   pose = k;
-
-  for(let i = 0; i <1; i++)
+  if(algo === 'multi-pose' && sub < pose.length)
   {
-    poseScore = pose[i].pose.score;
+    i = sub;
+  }else if(algo === 'single-pose')
+  {
+    i=0;
+    data.subject = 1;
+  }else {
+    i = 0;
+  }
 
-    if(poseNet.flipHorizontal)
-    {
-      nose = pose[i].pose.keypoints[0].score;
-      leftEye = pose[i].pose.keypoints[2].score;
-      rightEye = pose[i].pose.keypoints[1].score;
-      leftEar = pose[i].pose.keypoints[4].score;
-      rightEar = pose[i].pose.keypoints[3].score;
-      leftShoulder = pose[i].pose.keypoints[6].score;
-      rightShoulder = pose[i].pose.keypoints[5].score;
-      leftElbow = pose[i].pose.keypoints[8].score;
-      rightElbow = pose[i].pose.keypoints[7].score;
-      leftWrist = pose[i].pose.keypoints[10].score;
-      rightWrist = pose[i].pose.keypoints[9].score;
-      leftHip = pose[i].pose.keypoints[12].score;
-      rightHip = pose[i].pose.keypoints[11].score;
-      leftKnee = pose[i].pose.keypoints[14].score;
-      rightKnee = pose[i].pose.keypoints[13].score;
-      leftAnkle = pose[i].pose.keypoints[16].score;
-      rightAnkle = pose[i].pose.keypoints[15].score;
-    }
-    else{
-      nose = pose[i].pose.keypoints[0].score;
-      leftEye = pose[i].pose.keypoints[1].score;
-      rightEye = pose[i].pose.keypoints[2].score;
-      leftEar = pose[i].pose.keypoints[3].score;
-      rightEar = pose[i].pose.keypoints[4].score;
-      leftShoulder = pose[i].pose.keypoints[4].score;
-      rightShoulder = pose[i].pose.keypoints[6].score;
-      leftElbow = pose[i].pose.keypoints[7].score;
-      rightElbow = pose[i].pose.keypoints[8].score;
-      leftWrist = pose[i].pose.keypoints[9].score;
-      rightWrist = pose[i].pose.keypoints[10].score;
-      leftHip = pose[i].pose.keypoints[11].score;
-      rightHip = pose[i].pose.keypoints[12].score;
-      leftKnee = pose[i].pose.keypoints[13].score;
-      rightKnee = pose[i].pose.keypoints[14].score;
-      leftAnkle = pose[i].pose.keypoints[15].score;
-      rightAnkle = pose[i].pose.keypoints[16].score;
-    }
+  poseScore = pose[i].pose.score;
+
+  if(poseNet.flipHorizontal)
+  {
+    nose = pose[i].pose.keypoints[0].score;
+    leftEye = pose[i].pose.keypoints[2].score;
+    rightEye = pose[i].pose.keypoints[1].score;
+    leftEar = pose[i].pose.keypoints[4].score;
+    rightEar = pose[i].pose.keypoints[3].score;
+    leftShoulder = pose[i].pose.keypoints[6].score;
+    rightShoulder = pose[i].pose.keypoints[5].score;
+    leftElbow = pose[i].pose.keypoints[8].score;
+    rightElbow = pose[i].pose.keypoints[7].score;
+    leftWrist = pose[i].pose.keypoints[10].score;
+    rightWrist = pose[i].pose.keypoints[9].score;
+    leftHip = pose[i].pose.keypoints[12].score;
+    rightHip = pose[i].pose.keypoints[11].score;
+    leftKnee = pose[i].pose.keypoints[14].score;
+    rightKnee = pose[i].pose.keypoints[13].score;
+    leftAnkle = pose[i].pose.keypoints[16].score;
+    rightAnkle = pose[i].pose.keypoints[15].score;
+  }
+  else{
+    nose = pose[i].pose.keypoints[0].score;
+    leftEye = pose[i].pose.keypoints[1].score;
+    rightEye = pose[i].pose.keypoints[2].score;
+    leftEar = pose[i].pose.keypoints[3].score;
+    rightEar = pose[i].pose.keypoints[4].score;
+    leftShoulder = pose[i].pose.keypoints[4].score;
+    rightShoulder = pose[i].pose.keypoints[6].score;
+    leftElbow = pose[i].pose.keypoints[7].score;
+    rightElbow = pose[i].pose.keypoints[8].score;
+    leftWrist = pose[i].pose.keypoints[9].score;
+    rightWrist = pose[i].pose.keypoints[10].score;
+    leftHip = pose[i].pose.keypoints[11].score;
+    rightHip = pose[i].pose.keypoints[12].score;
+    leftKnee = pose[i].pose.keypoints[13].score;
+    rightKnee = pose[i].pose.keypoints[14].score;
+    leftAnkle = pose[i].pose.keypoints[15].score;
+    rightAnkle = pose[i].pose.keypoints[16].score;
   }
 }
 
+let r = 0;
 let update = function() {
-
-  data.poseScore = poseScore;
-  data.nose = nose;
-  data.leftEye = leftEye;
-  data.rightEye = rightEye;
-  data.leftEar = leftEar;
-  data.rightEar = rightEar;
-  data.leftShoulder = leftShoulder;
-  data.rightShoulder = rightShoulder;
-  data.leftElbow = leftElbow;
-  data.rightElbow = rightElbow;
-  data.leftWrist = leftWrist;
-  data.rightWrist = rightWrist;
-  data.leftHip = leftHip;
-  data.rightHip = rightHip;
-  data.leftKnee = leftKnee;
-  data.rightKnee = rightKnee;
-  data.leftAnkle = leftAnkle;
-  data.rightAnkle = rightAnkle;
-
+  if(r %2 ==0)
+  {
+    data.poseScore = poseScore;
+    data.nose = nose;
+    data.leftEye = leftEye;
+    data.rightEye = rightEye;
+    data.leftEar = leftEar;
+    data.rightEar = rightEar;
+    data.leftShoulder = leftShoulder;
+    data.rightShoulder = rightShoulder;
+    data.leftElbow = leftElbow;
+    data.rightElbow = rightElbow;
+    data.leftWrist = leftWrist;
+    data.rightWrist = rightWrist;
+    data.leftHip = leftHip;
+    data.rightHip = rightHip;
+    data.leftKnee = leftKnee;
+    data.rightKnee = rightKnee;
+    data.leftAnkle = leftAnkle;
+    data.rightAnkle = rightAnkle;
+    data.subject = subject;
+  }
+  r+=0.5;
   requestAnimationFrame(update);
 };

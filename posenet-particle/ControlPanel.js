@@ -1,6 +1,4 @@
 // Control panel
-let psn;
-
 
 let algo;         // algorithm Element
 let mobileNet;  // mobileNetArchitecture Element
@@ -19,14 +17,14 @@ let flip;         // flipHorizontal Element
 
 let psNet = function()
 {
-  algo = this.algorithm = 'single';
+  algo = this.algorithm = 'single-pose';
   mobileNet = this.mobileNetArchitecture = 0.75;
   outStride = this.outputStride = 16;
   iSFactor = this.imageScaleFactor = 0.5;
   particle = this.particles = 100;
   minPoseConf = this.minPoseConfidence = 0.2;
   minPartConf = this.minPartConfidence = 0.2;
-  maxPose = this.maxPoseDetections = 5;
+  maxPose = this.maxPoseDetections = 2;
   nmsRad = this.nmsRadius = 20;
   showVid = this.showVideo = true;
   showSkl = this.showSkeleton = true;
@@ -35,20 +33,20 @@ let psNet = function()
   flip = this.flipHorizontal = true;
 };
 
+let psn;
 let f2,f3;
 
 function loadControls()
 {
   psn = new psNet();
   let gui = new dat.GUI();
-  // gui.autoplace = true;
   gui.width= 290;
 
-  gui.add(psn, 'algorithm', [ 'single' , 'multiple'] ).onChange(setValue);
+  gui.add(psn, 'algorithm', ['single-pose','multi-pose'] ).onChange(setValue);
 
   var f1 = gui.addFolder('Input');
   f1.add(psn, 'mobileNetArchitecture',[1.01, 1.00, 0.75, 0.50]).onChange(setValue);
-  //
+
   f1.add(psn, 'outputStride', [8, 16, 32]).onChange(setValue);
   f1.add(psn, 'imageScaleFactor', 0.2, 1).onChange(setValue);
   f1.add(psn, 'particles',0,300).step(1).onChange(setValue);
@@ -59,7 +57,7 @@ function loadControls()
   f2.add(psn, 'minPartConfidence', 0, 1).onChange(setValue);
 
   f3 = gui.addFolder('Multi-Pose Detection');
-  f3.add(psn, 'maxPoseDetections', 0, 20).step(1).onChange(setValue);
+  f3.add(psn, 'maxPoseDetections', 1, 5,1).onChange(setValue);
   f3.add(psn, 'minPoseConfidence', 0, 1).onChange(setValue);
   f3.add(psn, 'minPartConfidence', 0, 1).onChange(setValue);
   f3.add(psn, 'nmsRadius', 0, 50).onChange(setValue);
@@ -82,7 +80,7 @@ function setValue()
   algo = psn.algorithm;
 
   // Automatically open or collapes the folder y the selected algorithm
-  if(algo === 'single')
+  if(algo === 'single-pose')
   {
     f2.open();
     f3.close();
